@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
-	"github.com/joho/godotenv"
 	"log"
 	"os"
 )
@@ -14,16 +13,12 @@ var db *gorm.DB
 var err error
 
 type User struct {
-	Id    int    `json:"id" gorm:"primarykey"`
+	Id    int    `json:"id" gorm:"primarykey;autoIncrement:true;unique"`
 	Name  string `json:"name"`
 	Email string `json:"email"`
 }
 
 func InitPostgresDB() {
-	err = godotenv.Load(".env")
-	if err != nil {
-		log.Fatal("Error loading .env file", err)
-	}
 	var (
 		host     = os.Getenv("DB_HOST")
 		port     = os.Getenv("DB_PORT")
@@ -41,7 +36,7 @@ func InitPostgresDB() {
 
 	db, err = gorm.Open("postgres", dsn)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalf("Failed to connect to postgres database due to error: %s", err)
 	}
 	db.AutoMigrate(User{})
 }

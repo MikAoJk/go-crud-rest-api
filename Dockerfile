@@ -1,12 +1,12 @@
 FROM golang:1.21.4-alpine as builder
 
-
 WORKDIR /usr/src/app
 
 COPY go.mod ./
 RUN go mod download && go mod verify
 
-COPY /src/main.go .
+
+COPY . .
 
 RUN go build -v -o /usr/src/app/go-crud-rest-api
 

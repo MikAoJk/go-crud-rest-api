@@ -29,6 +29,7 @@ go build .
 ```
 
 ### Run the code
+OBS: Need a Postgres DB up and running
 ``` bash
 go run .
 ```
