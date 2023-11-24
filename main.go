@@ -1,29 +1,25 @@
 package main
 
 import (
-	"container/list"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"net/http"
+	"os"
 )
 
 type User struct {
-	id    int
-	name  string
-	email string
+	Id    int    `json:"id"`
+	Name  string `json:"name"`
+	Email string `json:"email"`
 }
 
-func users(w http.ResponseWriter, req *http.Request) {
+func postUser(w http.ResponseWriter, req *http.Request) {
+	user := &User{Id: 1, Name: "aa", Email: "aaa@mail"}
 
-	l := list.New() // Initialize an empty list
+	// TODO store incomming req body of a user i Database
 
-	user1 := User{id: 1, name: "aa", email: "aaa@mail"}
-	user2 := User{id: 1, name: "aa", email: "aaa@mail"}
-
-	l.PushFront(user1)
-	l.PushFront(user2)
-
-	b, err := json.Marshal(l)
+	b, err := json.Marshal(user)
 	if err != nil {
 		fmt.Println(err)
 		return
@@ -32,10 +28,15 @@ func users(w http.ResponseWriter, req *http.Request) {
 	fmt.Fprintf(w, string(b))
 }
 
-func user(w http.ResponseWriter, req *http.Request) {
-	person := User{id: 1, name: "aa", email: "aaa@mail"}
+func getUsers(w http.ResponseWriter, req *http.Request) {
+	user1 := User{Id: 1, Name: "aa", Email: "aaa@mail"}
+	user2 := User{Id: 2, Name: "bb", Email: "bbb@mail"}
 
-	b, err := json.Marshal(person)
+	var listUsers []User
+	listUsers = append(listUsers, user1)
+	listUsers = append(listUsers, user2)
+
+	b, err := json.Marshal(listUsers)
 	if err != nil {
 		fmt.Println(err)
 		return
@@ -46,11 +47,16 @@ func user(w http.ResponseWriter, req *http.Request) {
 
 func main() {
 
-	http.HandleFunc("/user", user)
-	http.HandleFunc("/user/", users)
+	http.HandleFunc("/users", postUser)
+	http.HandleFunc("/users/", getUsers)
 
 	err := http.ListenAndServe(":8080", nil)
-	if err != nil {
-		return
+
+	if errors.Is(err, http.ErrServerClosed) {
+		fmt.Printf("server closed\n")
+	} else if err != nil {
+		fmt.Printf("error starting server: %s\n", err)
+		os.Exit(1)
 	}
+
 }
