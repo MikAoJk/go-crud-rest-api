@@ -11,7 +11,7 @@ func InitRouter() *gin.Engine {
 	r.POST("/users", postUsers)
 	r.GET("/users/:id", getUser)
 	r.GET("/users", getUsers)
-	r.PUT("/users/", updateUser)
+	r.PUT("/users/:id", updateUser)
 	r.DELETE("/users/:id", deleteUser)
 	return r
 }
