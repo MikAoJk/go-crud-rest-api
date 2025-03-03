@@ -26,7 +26,7 @@ func deleteUser(ctx *gin.Context) {
 		return
 	}
 	ctx.JSON(http.StatusOK, gin.H{
-		"message": "user deleted successfully",
+		"message": "user deleted",
 	})
 }
 
